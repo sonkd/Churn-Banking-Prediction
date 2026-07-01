@@ -1,0 +1,18 @@
+{
+  "psi": {
+    "age": 0.091,
+    "balance": 0.001,
+    "frequency": 0.752,
+    "monetary": 0.003,
+    "app_logins_mean": 0.004,
+    "complaints_sum": 0.303,
+    "recency": 0.0,
+    "txn_trend": 0.005
+  },
+  "drifted_features": [
+    "frequency",
+    "complaints_sum"
+  ],
+  "retrain_trigger": true,
+  "rule": "retrain if any feature PSI > 0.2 OR recall drops > 10%"
+}

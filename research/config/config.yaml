@@ -1,0 +1,14 @@
+seed: 42
+paths:
+  raw: ../data/raw/bank_customer_churn.csv
+  synthetic: ../data/synthetic/transactions_monthly.csv
+  processed: ../data/processed
+  models: outputs/models
+  metrics: outputs/metrics
+  figures: outputs/figures
+target: churn
+# cost framing: missing a churner >> false alarm -> favor recall
+decision_threshold: 0.30
+segmentation:
+  k: 4
+  features: [recency, frequency, monetary, app_logins_mean, complaints_sum]

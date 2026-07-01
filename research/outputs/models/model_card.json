@@ -1,0 +1,26 @@
+{
+  "features": [
+    "age",
+    "balance",
+    "credit_score",
+    "tenure",
+    "frequency",
+    "monetary",
+    "app_logins_mean",
+    "complaints_sum",
+    "recency",
+    "txn_trend",
+    "country",
+    "gender"
+  ],
+  "threshold": 0.3,
+  "metrics": {
+    "auc_roc": 0.7394163995726496,
+    "auc_pr": 0.2673516463955812,
+    "f1": 0.15789473684210525,
+    "recall": 0.09375,
+    "threshold": 0.3,
+    "n_test": 500
+  },
+  "model_type": "RandomForestClassifier"
+}

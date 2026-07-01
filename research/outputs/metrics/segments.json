@@ -1,0 +1,23 @@
+{
+  "k": 4,
+  "silhouette": 0.24813914893165395,
+  "personas": {
+    "0": "Loyal High-Value",
+    "1": "Dormant At-Risk",
+    "2": "New Explorer",
+    "3": "Price-Sensitive"
+  },
+  "churn_rate_by_segment": {
+    "0": 0.176,
+    "1": 0.079,
+    "2": 0.028,
+    "3": 0.022
+  },
+  "features": [
+    "recency",
+    "frequency",
+    "monetary",
+    "app_logins_mean",
+    "complaints_sum"
+  ]
+}

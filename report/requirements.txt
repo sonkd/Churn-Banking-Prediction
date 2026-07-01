@@ -1,0 +1,4 @@
+pandas>=2.0
+matplotlib>=3.7
+python-pptx>=0.6      # slides (PPTX deliverable)
+markdown>=3.5
