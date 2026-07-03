@@ -1,0 +1,43 @@
+{
+  "model": "HistGradientBoosting (demo-only, REAL features)",
+  "version": "v2",
+  "trained_at": "2026-07-03T17:17:47",
+  "seed": 42,
+  "n_train": 8000,
+  "n_test": 2000,
+  "features": [
+    "tenure",
+    "balance",
+    "products_number",
+    "credit_card",
+    "active_member",
+    "estimated_salary",
+    "balance_to_salary_ratio",
+    "active_and_card",
+    "tenure_per_product",
+    "country_Germany",
+    "country_Spain",
+    "gender_Male",
+    "age_band_30-39",
+    "age_band_40-49",
+    "age_band_50-59",
+    "age_band_60+",
+    "credit_score_tier_fair",
+    "credit_score_tier_good",
+    "credit_score_tier_very_good",
+    "credit_score_tier_excellent"
+  ],
+  "metrics_test": {
+    "auc_roc": 0.861,
+    "auc_pr": 0.7037
+  },
+  "operating_point": {
+    "budget_K": 0.1,
+    "note": "threshold = quantile(proba, 0.9); review against the actual budget"
+  },
+  "caveats": [
+    "Uses only the 12 real columns; behavioral (synthetic) features are NOT in the deployed model",
+    "Cross-sectional churn label \u2014 redefine over a 90-day window once real timestamps exist",
+    "Retention uplift is not causally validated \u2014 requires an A/B test"
+  ]
+}
