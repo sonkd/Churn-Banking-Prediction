@@ -1,5 +1,5 @@
 """Smoke test: the contract artifacts exist and look sane after run_pipeline."""
-import json, os, subprocess, sys
+import json, subprocess, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 

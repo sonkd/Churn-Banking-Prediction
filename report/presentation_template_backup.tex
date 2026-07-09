@@ -1,0 +1,198 @@
+\documentclass[11pt,aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% ── Color Palette (matching HUST DS theme) ────────────────────────────────────
+\definecolor{primary}{RGB}{192,33,53}       % Plum Red
+\definecolor{secondary}{RGB}{0,128,128}     % Teal
+\definecolor{accent}{RGB}{227,114,34}       % Orange accent
+\definecolor{lightbg}{RGB}{245,248,252}     % Light background
+\definecolor{codebg}{RGB}{30,30,30}
+\definecolor{codegreen}{RGB}{80,200,120}
+\definecolor{codeyellow}{RGB}{220,180,80}
+\definecolor{neutral}{RGB}{110,110,110}
+\definecolor{navy}{HTML}{1a2744}
+\definecolor{crimson}{HTML}{A32D2D}
+\definecolor{teal}{HTML}{0F6E56}
+\definecolor{NodeBlue}{RGB}{135,206,235}
+\definecolor{NodeGreen}{RGB}{144,238,144}
+\definecolor{NodeOrange}{RGB}{255,200,100}
+\definecolor{NodePurple}{RGB}{206,170,206}
+
+\setbeamercolor{palette primary}{bg=primary,fg=white}
+\setbeamercolor{palette secondary}{bg=primary!80,fg=white}
+\setbeamercolor{palette tertiary}{bg=primary!60,fg=white}
+\setbeamercolor{palette quaternary}{bg=primary,fg=white}
+\setbeamercolor{structure}{fg=primary}
+\setbeamercolor{section in toc}{fg=primary}
+\setbeamercolor{block title}{bg=neutral,fg=white}
+\setbeamercolor{block body}{bg=lightbg}
+\setbeamercolor{block title example}{bg=secondary,fg=white}
+\setbeamercolor{block body example}{bg=secondary!10}
+\setbeamercolor{block title alerted}{bg=accent,fg=white}
+\setbeamercolor{block body alerted}{bg=accent!10}
+\setbeamercolor{alerted text}{fg=accent}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[T5]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.misc,arrows.meta,positioning,fit,backgrounds,calc}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{multicol}
+
+% ── Math shortcuts ────────────────────────────────────────────────────────────
+\newcommand{\Rbb}{\mathbb{R}}
+\newcommand{\Gcal}{\mathcal{G}}
+\newcommand{\Vcal}{\mathcal{V}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Ucal}{\mathcal{U}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\topK}{@K}
+
+% ── Beamer settings ───────────────────────────────────────────────────────────
+\setbeamercovered{transparent=20}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{frametitle}{
+    \nointerlineskip
+    \begin{beamercolorbox}[sep=0.5cm,wd=\paperwidth]{frametitle}
+        \vbox{}\vskip-2ex%
+        \strut\insertframetitle\strut
+        \hfill
+        {\includegraphics[height=0.8cm]{img/logo-dhbk.png}}
+        \vskip-1.5ex
+    \end{beamercolorbox}
+}
+\setbeamerfont{block body}{size=\small}
+
+% ── Title Information ─────────────────────────────────────────────────────────
+\title{Customer Churn Prediction \& Segmentation for a Digital Bank}
+\subtitle{From Business Analysis to ...}
+\author{
+    Tác giả 1$^1$ \and Tác giả 2$^2$ \and Tác giả 3$^1$ \\
+    \small{
+        \href{mailto:author1@email.com}{\texttt{author1@email.com}} \and
+        \href{mailto:author2@email.com}{\texttt{author2@email.com}} \and
+        \href{mailto:author3@email.com}{\texttt{author3@email.com}}
+    }
+    \\
+    Tác giả 4$^4$ \and Tác giả 5$^5$ \\
+    \small{
+        \href{mailto:author1@email.com}{\texttt{author1@email.com}} \and
+        \href{mailto:author2@email.com}{\texttt{author2@email.com}}
+    }
+}
+
+\institute[SOICT]{
+  Master of Data Science Program, \\
+  School of Information and Communications Technology, \\
+  Hanoi University of Science and Technology
+}
+\date{July 2026}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── SLIDE 1: TITLE ────────────────────────────────────────────────────────────
+\begin{frame}[plain,noframenumbering]
+  \titlepage
+\end{frame}
+
+% ── SLIDE 2: TABLE OF CONTENTS ────────────────────────────────────────────────
+\begin{frame}{Table of Contents}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Project Overview}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Exploratory Data Analysis}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Data Modeling}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Prediction System Deployment}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Open Questions \& Discussion}
+% ─────────────────────────────────────────────────────────────────────────────
+
+% ── SLIDE X: XXXX ───────────────────────────────────────
+\begin{frame}{Title...}
+    TBD...
+\end{frame}
+
+% ── SLIDE 13: THANK YOU ───────────────────────────────────────────────────────
+\begin{frame}[noframenumbering]{}
+  \begin{center}
+    \vspace{0.8cm}
+    {\huge \textbf{Thank You}}\\[0.4cm]
+    {\large Questions \& Discussion}\\[0.8cm]
+    \rule{0.65\textwidth}{0.4pt}\\[0.3cm]
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,7 +1,7 @@
 seed: 42
 paths:
   raw: ../data/raw/bank_customer_churn.csv
-  synthetic: ../data/synthetic/transactions_monthly.csv
+  synthetic: ../data/synthetic/transactions_monthly_v2.csv
   processed: ../data/processed
   models: outputs/models
   metrics: outputs/metrics

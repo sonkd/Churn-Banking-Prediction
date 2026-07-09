@@ -1,0 +1,8 @@
+[tool.ruff]
+# Exploratory notebooks aren't held to the production lint bar (dead cells, one-off imports).
+extend-exclude = ["notebooks", "*.ipynb"]
+
+[tool.ruff.lint]
+# research/ and development/ deliberately favor compact one-liners (semicolon-joined
+# statements, grouped imports) throughout - a style choice, not a defect to flag.
+ignore = ["E401", "E701", "E702", "E703"]

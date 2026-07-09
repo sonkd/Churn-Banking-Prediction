@@ -1,4 +1,5 @@
 {
+  "semver": "1.0.9",
   "features": [
     "age",
     "balance",
@@ -15,12 +16,14 @@
   ],
   "threshold": 0.3,
   "metrics": {
-    "auc_roc": 0.7394163995726496,
-    "auc_pr": 0.2673516463955812,
-    "f1": 0.15789473684210525,
-    "recall": 0.09375,
+    "auc_roc": 0.9834012387768536,
+    "auc_pr": 0.9627697307299512,
+    "f1": 0.89120151371807,
+    "recall": 0.925343811394892,
     "threshold": 0.3,
-    "n_test": 500
+    "n_test": 2500
   },
-  "model_type": "RandomForestClassifier"
+  "model_type": "RandomForestClassifier",
+  "data_version": "1.0.0+a779e9989353",
+  "wandb_run_id": "ermhzevc"
 }

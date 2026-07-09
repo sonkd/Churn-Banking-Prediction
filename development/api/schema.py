@@ -20,3 +20,13 @@ class Prediction(BaseModel):
     segment: int | None = None
     threshold: float
     model_source: str
+
+class BatchPrediction(BaseModel):
+    """One row of a batch-scored bucket/predictions/latest.parquet (written by
+    development/batch/predict.py, Pipeline #3)."""
+    customer_id: int
+    churn_proba: float
+    churn_label: int
+    segment: int
+    model_version: str
+    scored_at: str

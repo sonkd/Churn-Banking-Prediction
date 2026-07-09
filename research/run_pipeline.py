@@ -1,11 +1,12 @@
 """Run the full research pipeline M1->M5. Independent of development/ and report/.
 Produces the artifact contract under research/outputs/ and data/processed/."""
-import sys, json
+import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # make `src` importable
 from src.m1_data_generation.generate import generate
 from src.m2_eda.eda import run as eda_run
 from src.m3_cleaning.clean import clean
+from src.m3_cleaning.validate import validate_base
 from src.m4_feature_engineering.features import build
 from src.m5_modeling.train_churn import train as train_churn
 from src.m5_modeling.train_segments import train as train_segments
@@ -15,7 +16,9 @@ def main():
     print("=== Research pipeline M1->M5 ===")
     generate()                       # M1
     eda_run()                        # M2
-    clean()                          # M3
+    base, _ = clean()                # M3
+    validate_base(base)              # M3 validation gate - fail-closed (pandera.errors.SchemaErrors)
+    print(f"[Validation] OK - schema passed for {len(base)} rows, {len(base.columns)} columns")
     build()                          # M4
     churn_metrics = train_churn()    # M5-A
     sil, by_seg = train_segments()   # M5-B

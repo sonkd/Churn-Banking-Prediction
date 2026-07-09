@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# OS
+.DS_Store
+
+# Experiment tracking (W&B offline runs - P2)
+research/wandb/
+wandb/
+
+# Batch prediction / monitoring bucket (local fsspec target - P3/P6)
+development/bucket/
+bucket/
+
+# Synced model artifacts (populated by scripts/sync_model.sh, not source)
+development/models/*
+!development/models/.gitkeep
+
+# Secrets / local env overrides
+.env
+development/.env
+!development/.env.default

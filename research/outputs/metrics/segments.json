@@ -1,6 +1,6 @@
 {
   "k": 4,
-  "silhouette": 0.24813914893165395,
+  "silhouette": 0.37642689720623285,
   "personas": {
     "0": "Loyal High-Value",
     "1": "Dormant At-Risk",
@@ -8,10 +8,10 @@
     "3": "Price-Sensitive"
   },
   "churn_rate_by_segment": {
-    "0": 0.176,
-    "1": 0.079,
-    "2": 0.028,
-    "3": 0.022
+    "0": 0.095,
+    "1": 0.029,
+    "2": 0.903,
+    "3": 1.0
   },
   "features": [
     "recency",
@@ -19,5 +19,6 @@
     "monetary",
     "app_logins_mean",
     "complaints_sum"
-  ]
+  ],
+  "wandb_run_id": "yq6q12kw"
 }

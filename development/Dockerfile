@@ -8,6 +8,10 @@ FROM python:3.11-slim AS runtime
 WORKDIR /app
 COPY --from=builder /install /usr/local
 COPY api ./api
+COPY app ./app
+COPY common ./common
+COPY batch ./batch
+COPY monitoring ./monitoring
 COPY models ./models
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser

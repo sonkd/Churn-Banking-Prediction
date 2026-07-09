@@ -1,6 +1,5 @@
 """Module 3 — Data cleaning. Missing/dupes/inconsistent categories, outlier treatment
 (invalid age, negative balance). Document every decision with before/after counts."""
-import pandas as pd
 from src.common.io import load_config, rpath, read_csv
 
 def clean():

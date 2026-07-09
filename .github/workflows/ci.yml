@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly "next quarter" batch + drift monitor - the P6 `make monitor` cron.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+env:
+  WANDB_MODE: offline
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        part: [research, development]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ${{ matrix.part }} dependencies
+        run: pip install -r ${{ matrix.part }}/requirements.txt
+      - name: Lint (ruff)
+        run: cd ${{ matrix.part }} && ruff check .
+      - name: Test (pytest)
+        run: cd ${{ matrix.part }} && pytest tests -q
+
+  regression-gate:
+    # Simple metric regression gate: retrain and make sure churn AUC hasn't dropped more
+    # than 2% vs. the model_card.json already committed to the branch.
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r research/requirements.txt
+      - name: Retrain and compare AUC against the committed model_card
+        run: |
+          cp research/outputs/models/model_card.json /tmp/model_card_before.json
+          make features
+          make train
+          python - <<'PY'
+          import json, sys
+
+          before = json.load(open("/tmp/model_card_before.json"))["metrics"]["auc_roc"]
+          after = json.load(open("research/outputs/models/model_card.json"))["metrics"]["auc_roc"]
+          drop = before - after
+          print(f"AUC before={before:.4f} after={after:.4f} drop={drop:.4f}")
+          if drop > 0.02:
+              print(f"::error::churn AUC dropped by {drop:.4f} (gate: > 0.02) vs the committed model_card.json")
+              sys.exit(1)
+          PY
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the development image (api + app share this image)
+        run: docker build -t churn-api:ci development/
+
+  monitor:
+    # `make monitor` on a schedule - the GH Actions cron replacement for Airflow (see
+    # docs/mlops_fti_task_plan.md section 3). Writes results into ./bucket, which is NOT
+    # persisted between runs here; wire BUCKET_URI to a real bucket for a durable history.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r research/requirements.txt -r development/requirements.txt
+      - name: Regenerate features + batch-predict + drift monitor
+        run: |
+          make features
+          make train
+          bash development/scripts/sync_model.sh
+          make batch-predict
+          cd development && python monitoring/generate_drift_batch.py && python monitoring/drift_report.py

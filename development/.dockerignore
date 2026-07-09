@@ -6,3 +6,5 @@ __pycache__
 ../research
 tests
 monitoring/reports
+bucket
+.env
