@@ -1,7 +1,7 @@
 {
   "model": "HistGradientBoosting (demo-only, REAL features)",
   "version": "v2",
-  "trained_at": "2026-07-03T17:17:47",
+  "trained_at": "2026-07-11T19:48:52",
   "seed": 42,
   "n_train": 8000,
   "n_test": 2000,

@@ -14,3 +14,4 @@ pandera>=0.20            # schema/range/null-rate validation gate after M3 (P1)
 wandb>=0.17              # experiment tracking, WANDB_MODE=offline by default (P2)
 pytest>=7.4
 ruff>=0.4
+shap>=0.44
