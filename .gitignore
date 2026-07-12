@@ -27,3 +27,5 @@ development/.env
 /data
 /report
 /research/outputs
+report/build_slides.py
+report/build_slides.py
