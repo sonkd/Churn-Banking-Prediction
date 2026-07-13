@@ -49,8 +49,20 @@ jobs:
           python - <<'PY'
           import json, sys
 
-          before = json.load(open("/tmp/model_card_before.json"))["metrics"]["auc_roc"]
-          after = json.load(open("research/outputs/models/model_card.json"))["metrics"]["auc_roc"]
+          before_card = json.load(open("/tmp/model_card_before.json"))
+          after_card = json.load(open("research/outputs/models/model_card.json"))
+          
+          # Support both "metrics" (from train_churn) and "metrics_test" (from promote_v3)
+          before_metrics = before_card.get("metrics") or before_card.get("metrics_test", {})
+          after_metrics = after_card.get("metrics") or after_card.get("metrics_test", {})
+          
+          before = before_metrics.get("auc_roc")
+          after = after_metrics.get("auc_roc")
+          
+          if before is None or after is None:
+              print(f"::error::Could not find auc_roc in model cards. Before metrics: {before_metrics}, After metrics: {after_metrics}")
+              sys.exit(1)
+          
           drop = before - after
           print(f"AUC before={before:.4f} after={after:.4f} drop={drop:.4f}")
           if drop > 0.02:
