@@ -1,6 +1,11 @@
 PYTHON ?= python3
 
-.PHONY: features train batch-predict serve monitor test
+.PHONY: features train promote batch-predict serve monitor test
+
+## research: promote v3 notebook artifacts -> canonical contract paths, then sync to development
+promote:
+	cd research && $(PYTHON) promote_v3.py
+	bash development/scripts/sync_model.sh
 
 ## research: M1 generate -> M3 clean -> validate (fail-closed) -> M4 build features
 features:

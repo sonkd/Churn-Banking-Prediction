@@ -41,23 +41,6 @@ every consumer; freely change their *content*.
 Wire research → development with `development/scripts/sync_model.sh` (copies the 3 model files
 into `development/models/`).
 
-## Commands (run from repo root via the Makefile, or per-part as shown)
-
-```bash
-make features        # research: M1 generate -> M3 clean -> M4 build features
-make train            # research: M5 train_churn + train_segments
-make batch-predict     # development: score features.parquet -> bucket/predictions/
-make serve            # development: docker compose up (API :8000, Streamlit :8501)
-make monitor          # development: drift report against the bucket's latest batch
-make test              # pytest in research/ AND development/ (must both pass)
-```
-
-Per-part equivalents (each part installs its own deps first):
-```bash
-cd research && pip install -r requirements.txt && python run_pipeline.py && pytest tests -q
-cd development && pip install -r requirements.txt && pytest tests -q
-```
-
 ## Style
 
 - Lint with `ruff` (listed in `research/requirements.txt`; add to `development/requirements.txt`
