@@ -21,7 +21,7 @@ batch-predict:
 
 ## development: API :8000 + Streamlit :8501 via docker compose
 serve:
-	cd development && docker compose up
+	cd development && docker compose down && docker compose up --build
 
 ## development: drift report against the bucket's latest batch
 monitor:
