@@ -25,5 +25,6 @@ development/models/*
 development/.env
 !development/.env.default
 /data
+/docs
 /report
 /research/outputs/models
