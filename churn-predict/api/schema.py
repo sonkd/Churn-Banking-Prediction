@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 class Customer(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     age: int = Field(40, ge=18, le=100)
     balance: float = 50000
     credit_score: int = Field(650, ge=300, le=850)
@@ -19,6 +20,7 @@ class Customer(BaseModel):
     gender: str = "Male"
 
 class Prediction(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     churn_probability: float
     churn_label: int
     segment: int | None = None
@@ -28,6 +30,7 @@ class Prediction(BaseModel):
 class BatchPrediction(BaseModel):
     """One row of a batch-scored bucket/predictions/latest.parquet (written by
     development/batch/predict.py, Pipeline #3)."""
+    model_config = ConfigDict(protected_namespaces=())
     customer_id: int
     churn_proba: float
     churn_label: int

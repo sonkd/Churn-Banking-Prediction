@@ -71,7 +71,7 @@ def predictions_page():
     st.pyplot(fig)
 
     st.subheader(f"Top {len(df)} at-risk customers")
-    st.dataframe(df, width="stretch")
+    st.dataframe(df, use_container_width=True)
     st.download_button("⬇️ Export CSV for retention team", df.to_csv(index=False),
                         file_name="retention_list.csv", mime="text/csv")
 
@@ -117,7 +117,7 @@ def monitoring_page():
     hist = pd.DataFrame(history)
     if len(hist) < 2:
         st.info("Need at least 2 batch runs to draw a trend — run `make batch-predict` again later.")
-        st.dataframe(hist, width="stretch")
+        st.dataframe(hist, use_container_width=True)
         return
 
     hist["scored_at"] = pd.to_datetime(hist["scored_at"])

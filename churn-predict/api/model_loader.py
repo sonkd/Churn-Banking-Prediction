@@ -20,12 +20,24 @@ class StubModel:
 def load_churn():
     p = MODELS / "churn_model.pkl"
     if p.exists():
-        return joblib.load(p), "research"
+        try:
+            return joblib.load(p), "research"
+        except (ValueError, ModuleNotFoundError, AttributeError) as e:
+            print(f"⚠️  Failed to load churn model (version mismatch): {e}")
+            print("  Using stub model instead.")
+            return StubModel(), "stub"
     return StubModel(), "stub"
 
 def load_segments():
     p = MODELS / "segmentation_model.pkl"
-    return (joblib.load(p), "research") if p.exists() else (None, "stub")
+    if not p.exists():
+        return None, "stub"
+    try:
+        return joblib.load(p), "research"
+    except (ValueError, ModuleNotFoundError, AttributeError) as e:
+        print(f"⚠️  Failed to load segmentation model (version mismatch): {e}")
+        print("  Skipping segmentation.")
+        return None, "stub"
 
 def model_card():
     p = MODELS / "model_card.json"
