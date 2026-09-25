@@ -4,7 +4,6 @@ HERE = Path(__file__).resolve().parent
 
 def build(metrics, segments):
     from pptx import Presentation
-    from pptx.util import Inches, Pt
     prs = Presentation()
     def slide(title, body):
         s = prs.slides.add_slide(prs.slide_layouts[1])

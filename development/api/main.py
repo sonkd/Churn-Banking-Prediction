@@ -7,10 +7,11 @@ from typing import Optional
 import pandas as pd
 from fastapi import Depends, FastAPI, HTTPException, Query
 
+from api.encoding import encode_for_model, needs_encoding
 from api.model_loader import load_churn, load_segments, model_card
 from api.schema import BatchPrediction, Customer, Prediction
 from api.settings import Settings, get_settings
-from common.bucket import read_json, read_latest_predictions
+from common.bucket import read_history, read_json, read_latest_predictions
 
 app = FastAPI(title="Digital Bank Churn API", version="0.2.0")
 _churn, _src = load_churn()
@@ -54,8 +55,12 @@ def ready(settings: Settings = Depends(get_settings)):
 
 @app.post("/predict", response_model=Prediction)
 def predict(c: Customer):
-    X = pd.DataFrame([c.model_dump()])
-    p = float(_churn.predict_proba(X)[0, 1])
+    raw = c.model_dump()
+    X = pd.DataFrame([raw])
+    # v3+ models are trained on encoded/engineered columns -> replicate the research encoding.
+    # The stub and pre-v3 models take the raw fields directly.
+    X_churn = encode_for_model(raw, _card["features"]) if needs_encoding(_card, set(raw)) else X
+    p = float(_churn.predict_proba(X_churn)[0, 1])
     seg = None
     if _seg is not None:
         feats = ["recency","frequency","monetary","app_logins_mean","complaints_sum"]
@@ -98,3 +103,12 @@ def monitoring_metrics(settings: Settings = Depends(get_settings)):
     if metrics is None:
         raise HTTPException(status_code=404, detail="no monitoring metrics yet - run `make monitor` first")
     return metrics
+
+
+@app.get("/monitoring/history")
+def monitoring_history(settings: Settings = Depends(get_settings)):
+    """Prediction drift: one quality record (accuracy/recall/AUC/mean_proba) per batch run."""
+    history = read_history(settings.bucket_uri)
+    if not history:
+        raise HTTPException(status_code=404, detail="no scoring history yet - run `make batch-predict` first")
+    return history

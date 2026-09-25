@@ -27,3 +27,11 @@ development/models/*
 .env
 development/.env
 !development/.env.default
+/data
+/report
+/research/outputs
+report/build_slides.py
+report/build_slides.py
+/research/outputs
+/research/outputs
+/research/outputs/models

@@ -34,6 +34,7 @@ def test_predictions_404_when_bucket_empty(empty_bucket):
     assert empty_bucket.get("/predictions/1").status_code == 404
     assert empty_bucket.get("/segments").status_code == 404
     assert empty_bucket.get("/monitoring/metrics").status_code == 404
+    assert empty_bucket.get("/monitoring/history").status_code == 404
 
 
 def test_ready_reports_bucket_state(empty_bucket):
@@ -62,3 +63,18 @@ def test_predictions_200_when_bucket_populated(populated_bucket):
 
     r5 = populated_bucket.get("/ready").json()
     assert r5["bucket_state"] == "populated"
+
+
+def test_monitoring_history_after_batch_run(populated_bucket):
+    """batch/predict.py must append one quality record per run (prediction drift)."""
+    r = populated_bucket.get("/monitoring/history")
+    assert r.status_code == 200
+    history = r.json()
+    assert len(history) >= 1
+    rec = history[-1]
+    for key in ("scored_at", "model_version", "mean_proba", "share_flagged", "threshold"):
+        assert key in rec
+    # features.parquet carries the synthetic ground-truth `churn` -> quality metrics present
+    if "accuracy" in rec:
+        assert 0.0 <= rec["accuracy"] <= 1.0
+        assert 0.0 <= rec["auc_roc"] <= 1.0

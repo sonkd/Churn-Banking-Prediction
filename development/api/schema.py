@@ -3,8 +3,12 @@ from pydantic import BaseModel, Field
 class Customer(BaseModel):
     age: int = Field(40, ge=18, le=100)
     balance: float = 50000
-    credit_score: int = Field(650, ge=300, le=900)
+    credit_score: int = Field(650, ge=300, le=850)
     tenure: int = 3
+    products_number: int = Field(1, ge=0, le=4)
+    credit_card: int = Field(1, ge=0, le=1)
+    active_member: int = Field(1, ge=0, le=1)
+    estimated_salary: float = 100000
     frequency: float = 60
     monetary: float = 4000
     app_logins_mean: float = 10

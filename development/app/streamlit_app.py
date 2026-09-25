@@ -11,6 +11,15 @@ import streamlit as st
 API = os.getenv("API_URL", "http://localhost:8000")
 st.set_page_config(page_title="Churn Dashboard", page_icon="🏦", layout="wide")
 
+# RFM segment labels (K-Means cluster id -> business name). Cluster ids are arbitrary:
+# re-verify this mapping against the churn-rate-by-cluster profile whenever the
+# segmentation model is retrained ("At Risk" must stay the highest-churn cluster).
+SEGMENT_LABELS = {0: "Champion", 1: "Loyalist", 2: "Promising", 3: "At Risk"}
+
+
+def segment_name(seg_id: int) -> str:
+    return SEGMENT_LABELS.get(int(seg_id), f"Segment {seg_id}")
+
 
 def api_get(path: str, **params):
     """Returns (data, error_message). Never raises - callers just check `error_message`."""
@@ -32,12 +41,13 @@ def predictions_page():
         return
 
     col_a, col_b = st.columns([1, 2])
-    segment_choice = col_a.selectbox("Segment", ["All"] + [str(s) for s in segments])
+    seg_options = {segment_name(s): s for s in segments}          # label -> id
+    segment_choice = col_a.selectbox("Segment", ["All"] + list(seg_options))
     top_k = col_b.slider("Top-k at-risk customers", min_value=5, max_value=500, value=50, step=5)
 
     params = {"top_k": top_k}
     if segment_choice != "All":
-        params["segment"] = int(segment_choice)
+        params["segment"] = seg_options[segment_choice]
     rows, err = api_get("/predictions", **params)
     if err:
         st.error(err)
@@ -47,6 +57,7 @@ def predictions_page():
     if df.empty:
         st.info("No predictions in the bucket yet — run `make batch-predict`.")
         return
+    df.insert(df.columns.get_loc("segment") + 1, "segment_label", df["segment"].map(segment_name))
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Customers shown", len(df))
@@ -96,6 +107,47 @@ def monitoring_page():
     scored_at = metrics.get("checked_at") or metrics.get("scored_at")
     if scored_at:
         st.caption(f"Last batch checked: {scored_at}")
+
+    # ---- Prediction drift: model quality per batch run over time ----
+    st.subheader("Prediction drift — accuracy over time")
+    history, err = api_get("/monitoring/history")
+    if err:
+        st.info(err)
+        return
+    hist = pd.DataFrame(history)
+    if len(hist) < 2:
+        st.info("Need at least 2 batch runs to draw a trend — run `make batch-predict` again later.")
+        st.dataframe(hist, width="stretch")
+        return
+
+    hist["scored_at"] = pd.to_datetime(hist["scored_at"])
+    hist = hist.sort_values("scored_at")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 3.5))
+    for col, color, label in [("accuracy", "#4C72B0", "accuracy"),
+                              ("auc_roc", "#55A868", "AUC-ROC"),
+                              ("recall", "#DD8452", "recall")]:
+        if col in hist.columns:
+            ax1.plot(hist["scored_at"], hist[col], marker="o", color=color, label=label)
+    ax1.set_title("Model quality per batch run")
+    ax1.set_ylim(0, 1.05); ax1.legend(); ax1.grid(True, linestyle=":", alpha=0.5)
+
+    ax2.plot(hist["scored_at"], hist["mean_proba"], marker="o", color="#C44E52", label="mean churn proba")
+    if "share_flagged" in hist.columns:
+        ax2.plot(hist["scored_at"], hist["share_flagged"], marker="s", linestyle="--",
+                 color="#8172B2", label="share flagged")
+    ax2.set_title("Score distribution per batch run")
+    ax2.legend(); ax2.grid(True, linestyle=":", alpha=0.5)
+    for ax in (ax1, ax2):
+        plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
+    st.pyplot(fig)
+
+    latest = hist.iloc[-1]
+    if "accuracy" in hist.columns and len(hist) >= 2:
+        prev = hist.iloc[-2]
+        st.caption(f"Latest run: accuracy {latest['accuracy']:.3f} "
+                   f"({latest['accuracy'] - prev['accuracy']:+.3f} vs previous), "
+                   f"model {latest['model_version']}")
 
 
 st.sidebar.title("🏦 Churn Dashboard")
