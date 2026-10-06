@@ -17,18 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        part: [research, development]
+        include:
+          - part: research
+            directory: research
+          - part: development
+            directory: churn-predict
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install ${{ matrix.part }} dependencies
-        run: pip install -r ${{ matrix.part }}/requirements.txt
+        run: pip install -r ${{ matrix.directory }}/requirements.txt
       - name: Lint (ruff)
-        run: cd ${{ matrix.part }} && ruff check .
+        run: cd ${{ matrix.directory }} && ruff check .
       - name: Test (pytest)
-        run: cd ${{ matrix.part }} && pytest tests -q
+        run: cd ${{ matrix.directory }} && pytest tests -q
 
   regression-gate:
     # Simple metric regression gate: retrain and make sure churn AUC hasn't dropped more
@@ -76,7 +80,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build the development image (api + app share this image)
-        run: docker build -t churn-api:ci development/
+        run: docker build -t churn-api:ci churn-predict/
 
   monitor:
     # `make monitor` on a schedule - the GH Actions cron replacement for Airflow (see
@@ -89,11 +93,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r research/requirements.txt -r development/requirements.txt
+      - run: pip install -r research/requirements.txt -r churn-predict/requirements.txt
       - name: Regenerate features + batch-predict + drift monitor
         run: |
           make features
           make train
-          bash development/scripts/sync_model.sh
+          bash churn-predict/scripts/sync_model.sh
           make batch-predict
-          cd development && python monitoring/generate_drift_batch.py && python monitoring/drift_report.py
+          cd churn-predict && python monitoring/generate_drift_batch.py && python monitoring/drift_report.py
