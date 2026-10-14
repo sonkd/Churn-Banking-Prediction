@@ -1,7 +1,8 @@
 """Module 3 (validation gate) — pandera schema check on the cleaned base table.
 Fail-closed: raises pandera.errors.SchemaErrors on any violation, stopping the pipeline.
 Ranges per data/data_dictionary.md section 1 (base Kaggle dataset)."""
-from pandera.pandas import Column, Check, DataFrameSchema
+
+from pandera.pandas import Check, Column, DataFrameSchema
 
 BASE_SCHEMA = DataFrameSchema(
     {
