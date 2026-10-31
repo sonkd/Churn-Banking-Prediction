@@ -1,5 +1,5 @@
 # Multi-stage: builder installs deps, runtime is slim + non-root (MLOps minimum viable)
-FROM python:3.11-slim AS builder
+FROM python:3.11.18-slim-bookworm AS builder
 
 WORKDIR /app
 
@@ -11,10 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 
 # Install dependencies to site-packages
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade pip==26.2.2 \
+    && pip install --no-cache-dir --prefix=/install -r requirements.txt \
+    && rm -rf /install/lib/python3.11/site-packages/pillow-*.dist-info \
+    && pip install --no-cache-dir --prefix=/install --no-deps Pillow==13.0.0
 
 # Runtime stage with security hardening
-FROM python:3.11-slim AS runtime
+FROM python:3.11.18-slim-bookworm AS runtime
 
 # Security: Update system packages to latest patches
 RUN apt-get update && apt-get upgrade -y \
@@ -24,8 +27,12 @@ RUN apt-get update && apt-get upgrade -y \
 WORKDIR /app
 
 # Copy installed packages from builder
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /install /usr/local
+
+RUN find /usr/local/lib/python3.11/site-packages -maxdepth 1 \
+    \( -name 'pip' -o -name 'pip-*' -o -name 'setuptools' -o -name 'setuptools-*' \
+    -o -name 'wheel' -o -name 'wheel-*' \) -exec rm -rf '{}' + \
+    && rm -f /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/pip3.11
 
 # Copy application code
 COPY api ./api
